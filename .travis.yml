@@ -1,0 +1,28 @@
+sudo: false
+language: php
+php:
+  - 5.6
+  - 7
+  - nightly
+  - hhvm
+  - hhvm-nightly
+branches:
+  only:
+    - master
+before_script:
+  - composer self-update
+  - composer install --dev --prefer-source
+script:
+  - ./vendor/bin/phpunit
+after_script:
+  ## Scrutinizer
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover ./build/logs/clover.xml
+
+# This part is there until Travis migrate to Ubuntu Trusty
+# see: https://github.com/travis-ci/travis-ci/issues/3788
+matrix:
+  allow_failures:
+    - php: hhvm-nightly
+    - php: nightly # until phpunit is fixed under travis
+  fast_finish: true
