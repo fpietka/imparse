@@ -2,6 +2,7 @@
     "name": "fpietka/imparse",
     "description": "Image Metadata Parser",
     "type": "library",
+    "keywords": ["image", "metadata", "xmp", "exif", "itpc"],
     "license": "MIT",
     "authors": [
         {
