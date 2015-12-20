@@ -9,7 +9,9 @@
             "email": "francois@pietka.fr"
         }
     ],
-    "require": {},
+    "require": {
+        "php": ">=5.5.9"
+    },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.5",
         "phpunit/phpunit": "^5.1"
