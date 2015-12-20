@@ -1,0 +1,22 @@
+{
+    "name": "fpietka/imparse",
+    "description": "Image Metadata Parser",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "François Pietka",
+            "email": "francois@pietka.fr"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.5",
+        "phpunit/phpunit": "^5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "lib/"
+        }
+    }
+}

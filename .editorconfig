@@ -1,0 +1,19 @@
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+indent_style = space
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{php,xml}]
+indent_size = 4
+
+# Matches the exact files either package.json or .travis.yml
+[{composer.json,.travis.yml}]
+indent_size = 2
