@@ -114,8 +114,11 @@ class Parser
 
     public function readXmp()
     {
-        $loadxml = (new \DOMDocument())->loadXML($this->readXmpData());
-        $this->metadata['xmp'] = $loadxml;
+        $xml = $this->readXmpData();
+        if ($xml !== null) {
+            $xml = (new \DOMDocument())->loadXML($xml);
+        }
+        $this->metadata['xmp'] = $xml;
     }
 
     private function readXmpData($chunk_size = 10000)
@@ -131,10 +134,12 @@ class Parser
             $buffer = substr($buffer, 0, $posEnd + 12);
         }
 
+        $complete = feof($file_pointer);
         fclose($file_pointer);
 
         // recursion here
-        if (!strpos($buffer, '</x:xmpmeta>')) {
+        if (!$complete
+            && !strpos($buffer, '</x:xmpmeta>')) {
             $buffer = $this->readXmpData($chunk_size * 2);
         }
 
