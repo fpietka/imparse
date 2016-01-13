@@ -101,14 +101,18 @@ class Parser
         getimagesize($this->resource, $info);
 
         if (isset($info['APP13'])) {
-            $data = iptcparse($info['APP13']);
+            $iptc = iptcparse($info['APP13']);
             $map = $this->iptclabels;
 
-            foreach ($data as $key => $value) {
-                $newData[$map[$key]] = $value;
-            }
+            if ($iptc !== false) {
+                $data = [];
 
-            $this->metadata['iptc'] = $newData;
+                foreach ($iptc as $key => $value) {
+                    $data[$map[$key]] = $value;
+                }
+
+                $this->metadata['iptc'] = $data;
+            }
         }
     }
 
