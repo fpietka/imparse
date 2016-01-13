@@ -86,6 +86,8 @@ class Parser
 
     private $resource;
 
+    private $file_pointer;
+
     public function __construct($resource)
     {
         $this->resource = $resource;
@@ -125,27 +127,40 @@ class Parser
         $this->metadata['xmp'] = $xml;
     }
 
-    private function readXmpData($chunk_size = 10000)
+    private function readXmpData($chunk_size = 1024)
+    {
+        if ($this->file_pointer === null) {
+            $this->file_pointer = fopen($this->resource, 'r');
+        }
+
+        $buffer = $this->extractXmpChunk($chunk_size);
+
+        fclose($this->file_pointer);
+
+        return $buffer;
+    }
+
+    private function extractXmpChunk($chunk_size)
     {
         $buffer = null;
-        $file_pointer = fopen($this->resource, 'r');
 
-        $chunk = fread($file_pointer, $chunk_size);
-        $posStart = strpos($chunk, '<x:xmpmeta');
-        if ($posStart !== false) {
-            $buffer = substr($chunk, $posStart);
+        do {
+            $chunk = fread($this->file_pointer, $chunk_size);
+
+            $eof = feof($this->file_pointer);
+            $posStart = strpos($chunk, '<x:xmpmeta');
+
+            if ($buffer !== null) {
+                $buffer .= $chunk;
+            } else if ($posStart !== false) {
+                $buffer = substr($chunk, $posStart);
+            }
+
             $posEnd = strpos($buffer, '</x:xmpmeta>');
-            $buffer = substr($buffer, 0, $posEnd + 12);
-        }
-
-        $complete = feof($file_pointer);
-        fclose($file_pointer);
-
-        // recursion here
-        if (!$complete
-            && !strpos($buffer, '</x:xmpmeta>')) {
-            $buffer = $this->readXmpData($chunk_size * 2);
-        }
+            if ($posEnd) {
+                $buffer = substr($buffer, 0, $posEnd + 12);
+            }
+        } while (!$eof);
 
         return $buffer;
     }
